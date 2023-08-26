@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Breakout</title>
+    <style>
+.container{
+    background-color: black;
+    display:grid;
+    width:600px;
+    height:100px;
+    row-gap: 10px;
+    column-gap: 10px;
+    grid-template-rows:repeat(3,1fr);
+    grid-template-columns: repeat(5,1fr)
+    
+}
+.item{
+    background-color: blue;
+    padding:10px;
+}
+
+.father{
+    margin:10px;
+    padding:10px;
+    background-color: black;
+    width:600px;
+    height:400px;
+}
+.stand{
+    background-color: blueviolet;
+    height:20px;
+    width:150px;
+    position:relative;
+    top: 250px;
+    left:200px;
+    
+}
+.ball{
+    height:30px;
+    width:30px;
+    background-color: white;
+    border-radius: 50px;
+    position:relative;
+    top:250px;
+    left:250px;
+}
+    </style>
+</head>
+<body>
+    <h1>Welcome to 2D Breakout</h1>
+    <button>Start</button>
+    <button>Reset</button>
+    <h2>Score: <span id="score">0</span></h2>
+<br>
+<div class="father">
+    <div class="container">
+        
+     <div class="item" id="block1"></div>
+     <div class="item" id="block2"></div>
+     <div class="item" id="block3"></div>
+     <div class="item" id="block4"></div>
+     <div class="item" id="block5"></div>
+     <div class="item" id="block6"></div>
+     <div class="item" id="block7"></div>
+     <div class="item" id="block8"></div>
+     <div class="item" id="block9"></div>
+     <div class="item" id="block10"></div>
+     <div class="item" id="block11"></div>
+     <div class="item" id="block12"></div>
+     <div class="item" id="block13"></div>
+     <div class="item" id="block14"></div>
+     <div class="item" id="block15"></div>
+       
+
+    </div>
+    <div class="ball" tabindex="0"></div>
+    <div class="stand"></div>n
+</div>
+
+<script>
+    function areElementsTouching(element1, element2) {
+  const rect1 = element1.getBoundingClientRect();
+  const rect2 = element2.getBoundingClientRect();
+
+  return (
+    rect1.left <= rect2.right &&
+    rect1.right >= rect2.left &&
+    rect1.top <= rect2.bottom &&
+    rect1.bottom >= rect2.top
+  );
+}
+    function getElementCornerCoordinates(element) {
+        const rect = element.getBoundingClientRect();
+        const topLeft = {
+            x: rect.left,
+            y: rect.top
+        };
+        const topRight = {
+            x: rect.right,
+            y: rect.top
+        };
+        const bottomLeft = {
+            x: rect.left,
+            y: rect.bottom
+        };
+        const bottomRight = {
+            x: rect.right,
+            y: rect.bottom
+        };
+        return { topLeft, topRight, bottomLeft, bottomRight };
+    }
+    const score = document.getElementById('score');
+    const stand = document.querySelector('.stand');
+    const ball = document.querySelector('.ball');
+    const crd_ball = getElementCornerCoordinates(ball);
+    const father = document.querySelector('.father');
+    stand.style.left = '200px';
+    ball.style.left = '250px';
+    ball.style.top = '250px';
+    function moveStand(event) {
+        if (event.key === 'n' && (getElementCornerCoordinates(stand).bottomLeft.x != 28 && getElementCornerCoordinates(stand).bottomLeft.y != 521)) {
+            stand.style.left = parseInt(stand.style.left) - 20 + 'px';
+            if(areElementsTouching(ball,stand)){
+            ball.style.left = parseInt(ball.style.left) - 20 + 'px';}
+        }
+        if (event.key === 'm' && (getElementCornerCoordinates(stand).bottomRight.x != 618 && getElementCornerCoordinates(stand).bottomRight.y != 540)) {
+            stand.style.left = parseInt(stand.style.left) + 20 + 'px';
+            if(areElementsTouching(ball,stand)){
+            ball.style.left = parseInt(ball.style.left) + 20 + 'px';}
+        }
+        if (event.key === 'ArrowUp') {
+            if(getElementCornerCoordinates(ball).topRight.y>111){
+            ball.style.top = parseInt(ball.style.top) - 5 + 'px';}
+            
+        }
+        if (event.key === 'ArrowDown') {
+            if(getElementCornerCoordinates(ball).bottomLeft.y < 630&&(!(areElementsTouching(ball,stand)))){
+                ball.style.top = parseInt(ball.style.top) + 5 + 'px';
+            ;}
+
+        }
+        if (event.key === 'ArrowLeft') {
+            if(getElementCornerCoordinates(ball).bottomLeft.x > getElementCornerCoordinates(father).bottomLeft.x){
+            ball.style.left = parseInt(ball.style.left) - 5 + 'px';
+}
+        }
+        if (event.key === 'ArrowRight') {
+            
+            if(getElementCornerCoordinates(ball).bottomRight.x < getElementCornerCoordinates(father).bottomRight.x){
+            ball.style.left = parseInt(ball.style.left) + 5 + 'px';
+           
+
+            } 
+            
+        }
+        for (let i = 1; i <= 15; i++) {
+            const block = document.getElementById(`block${i}`);
+            if (areElementsTouching(block, ball)) {
+                if (block.classList.contains('item')) {
+                    block.classList.remove('item');
+                    score.innerText = parseInt(score.innerText) + 1;
+                    if (score.innerText === '15') {
+                        alert("Congratulations! You won");
+                    }
+                }
+            }
+        }
+        
+    }
+   
+    
+
+    window.addEventListener('keydown', moveStand);
+    window.addEventListener('keyup', moveStand);
+
+</script>
+
+</body>
+</html>
